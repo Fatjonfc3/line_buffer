@@ -30,10 +30,11 @@ end entity line_buffer;
 
 architecture rtl of line_buffer is
 signal line_buffers : t_line_buffer_complete ( 0 to FILTER_SIZE ) (0 to IMAGE_WIDTH - 1) ( 15 downto 0 ) := ( others => ( others => ( others => '0' ))) ; --1 line buffer plus per parallel computing
-signal x , y , suby , subx  : unsigned ( 6 downto 0 ) := ( others => '0'); --we refer to x the line buffers , line buffer 1 , line buffer 2 etc
+signal x , y ,  : unsigned ( 6 downto 0 ) := ( others => '0'); --we refer to x the line buffers , line buffer 1 , line buffer 2 etc
 --y to address where to write the value and suby which one to process , maybe also the same could be fine , just in case
 --not really efficient processing better some more pipelined implementation, but just for beginning
 -- or better just use integer 0 to 3
+signal suby , subx : unsigned (1 downto 0):= "00"; -- no need for the if else logic to check 3 or 4 , since subx max 0 to 3
 signal start, start_process  : std_logic := '0';
 
 begin
@@ -45,7 +46,7 @@ process (clk )
 		else
 			valid <= '1';
 			for i in 0 to 2 loop
-				line_out_data(i) <= line_buffers ( sub_x mod 4 )(sub_y); --pretty messy but it should work
+				line_out_data(i) <= line_buffers ( sub_x + i )(sub_y); --pretty messy but it should work
 			end loop;
 			if sub_y = IMAGE_WIDTH - 1 then
 				sub_y <= ( others => '0');
