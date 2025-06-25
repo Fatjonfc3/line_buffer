@@ -46,7 +46,7 @@ process (clk )
 		else
 			valid <= '1';
 			for i in 0 to 2 loop
-				line_out_data(i) <= line_buffers ( sub_x + i )(sub_y); --pretty messy but it should work
+				line_out_data(i) <= line_buffers ( sub_x + i mod 4 )(sub_y); --pretty messy but it should work
 			end loop;
 			if sub_y = IMAGE_WIDTH - 1 then
 				sub_y <= ( others => '0');
